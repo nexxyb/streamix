@@ -1,0 +1,64 @@
+{% extends "files/base.html" %}
+{%load static %}
+{% block content %}
+<div id="content-wrapper">
+    <div class="container-fluid pt-5 pb-5">
+       <div class="row">
+          <div class=" mx-auto text-center upload-video">
+            <div id="uppyContainer" class="col-md-8 mx-auto pt-5 pb-5"></div>
+                <div id="uppydashboard"></div>
+                <script>
+                    var uppy = new Uppy.Uppy({
+                        target: '#uppyContainer',
+                        restrictions: {
+                            maxFileSize: 100 * 1024 * 1024,  
+                            maxNumberOfFiles:1,
+                            allowedFileTypes:['.mp4', '.mov', '.avi', '.wmv', '.flv', '.mkv', '.webm', '.m4v', '.3gp', '.mpg', '.mpeg', '.m2v', '.m4v', '.mp3', '.wav', '.wma',  '.aac', '.flac', '.alac', '.m4a', '.md'],
+                        },
+                    });
+                    
+                    uppy.use(Uppy.Dashboard, { inline: true, 
+                        target: '#uppydashboard', 
+                        showProgressDetails: true });
+                    
+                    uppy.use(Uppy.XHRUpload, {
+                        endpoint: '{% url 'upload_video_view' %}',
+                        fieldName: 'file',
+                    });
+                    uppy.on('complete', (result) => {
+                     const response = result.response;
+                     
+                     console.log(result);
+                     console.log(response);
+                     
+                     if (response.ok && response.data.id) {
+                         window.location.href = '/upload-edit/' + response.data.id + '/';
+                     } else {
+                         // Handle other cases or errors
+                     }
+                 });
+                </script>
+          </div>
+       </div>
+    </div>
+    <!-- /.container-fluid -->
+    <!-- Sticky Footer -->
+    <footer class="sticky-footer">
+       <div class="container">
+          <div class="row no-gutters">
+             <div class="col-lg-6 col-sm-6">
+                 <p class="mt-1 mb-0"><strong class="text-dark">Streamicks</strong>. 
+                   
+                </p>
+             </div>
+             <div class="col-lg-6 col-sm-6 text-right">
+                <div class="app">
+                   <a href="#"><img alt="" src="img/google.png"></a>
+                   <a href="#"><img alt="" src="img/apple.png"></a>
+                </div>
+             </div>
+          </div>
+       </div>
+    </footer>
+ </div>
+{%endblock%}
